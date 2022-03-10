@@ -51,8 +51,13 @@ public class ContactServiceImpl implements ContactService {
     @Override
     @Transactional
     public Contact update(Contact contact, int id) {
+        if ((!Validator.doValidation(Validation.regexPhone, contact.getPhone())) ||
+                (!Validator.doValidation(Validation.regexEmail, contact.getEmail())) ||
+                (!Validator.checkLabel(contact.getEmailLable(),Validation.lable)) ||
+                (!Validator.checkLabel(contact.getPhoneLable(),Validation.lable))){
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"Wrong input");
+        }
         Contact fromDb = contactRepository.findById(id).orElseThrow(() -> {
-
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "wrong ");
         });
         fromDb.setName(contact.getName());
